@@ -32,8 +32,14 @@ def consulta_cnpj(cnpj):
             pass
     cd_filial = 3
     ds_filial_entidade = '1;3'
+    ds_atividades = []
+    ds_atividades.append(f"{data_dict['estabelecimento']['atividade_principal']['subclasse']} - {data_dict['estabelecimento']['atividade_principal']['descricao']}")
+
+    for atividade in data_dict['estabelecimento']['atividades_secundarias']:
+        ds_atividades.append((f"{atividade['subclasse']} - {atividade['descricao']}"))
 
     return (ds_entidade, ds_fantasia, situacao_cadastral, 
             nr_cep, ds_endereco, nr_numero, ds_complemento, 
             nr_ddd, nr_telefone, ds_email, ds_cidade, cd_cidade, nr_ie,
-            cd_filial, ds_filial_entidade)
+            cd_filial, ds_filial_entidade, ds_atividades)
+

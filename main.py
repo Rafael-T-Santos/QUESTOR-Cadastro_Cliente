@@ -1,16 +1,21 @@
 import flet
 from flet import (  Page, ElevatedButton, Text, TextField, 
                     Row, Column ,Container, LinearGradient, Alignment, 
-                    Dropdown, dropdown, ListView, alignment, colors)
+                    Dropdown, dropdown, ListView, alignment, colors,
+                    AlertDialog, TextButton)
 from request_cnpj import consulta_cnpj
+from insert import insert_cliente
 
 def main(page: Page):
 
+    page.title = 'Cadastrar novo cliente'
     page.scroll = 'auto'
+    page.window_maximized =  True
     #page.window_width = 700
     width = 500
 
     def btn_pesquisar_click(e):
+        global cnpj, cd_cidade, cd_filial, ds_filial_entidade
         if not txt_cnpj.value:
             txt_cnpj.error_text = "Insira um CNPJ válido."
             page.update()
@@ -18,6 +23,7 @@ def main(page: Page):
             txt_cnpj.error_text = "O CNPJ deve conter 14 digitos sem pontos ou traços."
             page.update()
         else:
+            txt_cnpj.error_text = None
             cnpj = txt_cnpj.value
             ds_entidade, ds_fantasia, situacao_cadastral, nr_cep, ds_endereco, nr_numero, ds_complemento,nr_ddd, nr_telefone, ds_email, ds_cidade, cd_cidade, nr_ie,cd_filial, ds_filial_entidade, ds_atividades = consulta_cnpj(cnpj)
             txt_razao.value = ds_entidade
@@ -40,13 +46,25 @@ def main(page: Page):
             page.update()
 
     def btn_cadastrar_click(e):
-        print('Cadastrar')
+        cd_cliente = insert_cliente(cnpj, txt_razao.value, txt_fantasia.value, txt_cep.value, txt_endereco.value, txt_numero.value, txt_complemento.value, txt_ddd.value, txt_telefone.value, txt_email.value, cd_cidade, txt_ie.value, cd_filial, ds_filial_entidade,dd_legenda_classificacao.value )
+        dlg_modal.content = Text(f'Código do cliente: {cd_cliente}')
+        open_dlg_modal(e)
 
     def btn_limpar_click(e):
         for elemento in elementos:
             elemento.value = ''
         lst_atividades.controls.clear()
         page.update()
+
+    def open_dlg_modal(e):
+        page.dialog = dlg_modal
+        dlg_modal.open = True
+        page.update()
+
+    def close_dlg(e):
+        dlg_modal.open = False
+        page.update()
+
 
     txt_cnpj = TextField(label="CNPJ", hint_text='Insira o CNPJ com 14 digitos.', width=390)
     btn_pesquisar = ElevatedButton('Pesquisar', on_click=btn_pesquisar_click,width=100)
@@ -72,6 +90,15 @@ def main(page: Page):
                                                                         )
     btn_cadastrar = ElevatedButton('Cadastrar', on_click=btn_cadastrar_click)
     btn_limpar = ElevatedButton('Limpar', on_click=btn_limpar_click)
+    dlg_modal = AlertDialog(
+        modal=True,
+        title=Text("Cadastro Efetuado"),
+        content=Text(""),
+        actions=[TextButton("OK", on_click=close_dlg)   
+        ],
+        actions_alignment="center",
+        on_dismiss=lambda e: print("Modal dialog dismissed!"),
+    )
 
     page.add(Row([
                     Column([

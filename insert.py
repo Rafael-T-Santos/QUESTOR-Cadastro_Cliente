@@ -22,8 +22,26 @@ cursor = cnxn.cursor()
 df = pd.DataFrame()
 df_sql = pd.DataFrame()
 
-def insert_cliente():
-    insert = f"""INSERT INTO TBL_ENTIDADES"""
+def insert_cliente(cnpj, txt_razao, txt_fantasia, txt_cep, txt_endereco, txt_numero, txt_complemento, txt_ddd, txt_telefone, txt_email, cd_cidade, txt_ie, cd_filial, ds_filial_entidade, classificacao):
+    
+    #insert = f"""INSERT INTO TBL_ENTIDADES"""
    
-    cursor.execute(insert)
-    cnxn.commit()
+    #cursor.execute(insert)
+    #cnxn.commit()
+    print(cnpj, txt_razao, txt_fantasia, txt_cep, txt_endereco, txt_numero, txt_complemento, txt_ddd, txt_telefone, txt_email, cd_cidade, txt_ie, cd_filial, ds_filial_entidade, classificacao)
+    #Saida 
+    # 19920626000144 
+    # E. F. DA SILVA CONSTRUTORA EPEREIRA CONSTRUTORA 
+    # 57160000 
+    # RODOVIA EDVAL LEMOS (AL-215 SUL) 
+    # 16 
+    # SALA  02                  QUADRAF                   LOTE  16 
+    # 82 
+    # 99350381 
+    # epereiratranslog@hotmail.com 
+    # 73 
+    # ISENTO 
+    # 3 
+    # 1;3 
+    # CONSUMIDOR FINAL
+    return 5434
