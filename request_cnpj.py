@@ -10,7 +10,7 @@ def consulta_cnpj(cnpj):
 
     resp = requests.get(url)
     data_dict = json.loads(resp.text)
-
+    
     ds_entidade = data_dict['razao_social']
     ds_fantasia = data_dict['estabelecimento']['nome_fantasia']
     situacao_cadastral = data_dict['estabelecimento']['situacao_cadastral']

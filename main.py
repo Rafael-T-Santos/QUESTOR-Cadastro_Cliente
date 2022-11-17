@@ -59,7 +59,7 @@ def main(page: Page):
     txt_telefone = TextField(label='Telefone', width=400)
     txt_email = TextField(label='E-mail', width=width)
     txt_cidade = TextField(label='Cidade', width=width)
-    txt_ie = TextField(label='Inscrição Estadual')
+    txt_ie = TextField(label='Inscrição Estadual', width=width)
     #txt_situacao_ie = TextField(label='Situação Inscrição Estadual', width=250, read_only=True)
     dd_legenda_classificacao = Dropdown(label='Classificação Entidade',options=[
                                                                                 dropdown.Option('PESSOA JURIDICA'),
