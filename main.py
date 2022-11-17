@@ -1,13 +1,13 @@
 import flet
 from flet import (  Page, ElevatedButton, Text, TextField, 
                     Row, Column ,Container, LinearGradient, Alignment, 
-                    Dropdown, dropdown)
+                    Dropdown, dropdown, ListView, alignment, colors)
 from request_cnpj import consulta_cnpj
 
 def main(page: Page):
 
     page.scroll = 'auto'
-    page.window_width = 700
+    #page.window_width = 700
     width = 500
 
     def btn_pesquisar_click(e):
@@ -19,7 +19,7 @@ def main(page: Page):
             page.update()
         else:
             cnpj = txt_cnpj.value
-            ds_entidade, ds_fantasia, situacao_cadastral, nr_cep, ds_endereco, nr_numero, ds_complemento,nr_ddd, nr_telefone, ds_email, ds_cidade, cd_cidade, nr_ie,cd_filial, ds_filial_entidade = consulta_cnpj(cnpj)
+            ds_entidade, ds_fantasia, situacao_cadastral, nr_cep, ds_endereco, nr_numero, ds_complemento,nr_ddd, nr_telefone, ds_email, ds_cidade, cd_cidade, nr_ie,cd_filial, ds_filial_entidade, ds_atividades = consulta_cnpj(cnpj)
             txt_razao.value = ds_entidade
             txt_fantasia.value = ds_fantasia
             txt_situacao.value = situacao_cadastral
@@ -31,7 +31,9 @@ def main(page: Page):
             txt_telefone.value = nr_telefone
             txt_email.value = ds_email
             txt_cidade.value = ds_cidade
-            txt_ie.value = nr_ie                
+            txt_ie.value = nr_ie
+            for atividade in ds_atividades:
+                lst_atividades.controls.append(Text(atividade))  
 
             #txt_razao.label = cnpj
             #page.clean()
@@ -43,12 +45,13 @@ def main(page: Page):
     def btn_limpar_click(e):
         for elemento in elementos:
             elemento.value = ''
+        lst_atividades.controls.clear()
         page.update()
 
-
-    txt_cnpj = TextField(label="CNPJ", hint_text='Insira o CNPJ com 14 digitos.', width=width)
-    btn_pesquisar = ElevatedButton('Pesquisar', on_click=btn_pesquisar_click)
+    txt_cnpj = TextField(label="CNPJ", hint_text='Insira o CNPJ com 14 digitos.', width=390)
+    btn_pesquisar = ElevatedButton('Pesquisar', on_click=btn_pesquisar_click,width=100)
     txt_razao = TextField(label='Razao Social', width=width)
+    lst_atividades = ListView(spacing=10, padding=70)
     txt_fantasia = TextField(label='Nome Fantasia', width=width)
     txt_situacao = TextField(label='Situação CNPJ', width=width, read_only=True)
     txt_cep = TextField(label='CEP', width=200)
@@ -70,15 +73,24 @@ def main(page: Page):
     btn_cadastrar = ElevatedButton('Cadastrar', on_click=btn_cadastrar_click)
     btn_limpar = ElevatedButton('Limpar', on_click=btn_limpar_click)
 
-    page.add(   Row([txt_cnpj, btn_pesquisar], spacing=10), 
-                txt_razao, txt_fantasia, txt_situacao, txt_cep, 
-                Row([txt_endereco,txt_numero]), 
-                txt_complemento, 
-                Row([txt_ddd, txt_telefone], spacing=10), 
-                txt_email, txt_cidade, 
-                txt_ie,dd_legenda_classificacao, 
-                Row([btn_cadastrar, btn_limpar])
+    page.add(Row([
+                    Column([
+                            Row([txt_cnpj, btn_pesquisar], spacing=10),
+                            txt_razao,txt_fantasia, txt_situacao, txt_cep, 
+                            Row([txt_endereco,txt_numero]), 
+                            txt_complemento, 
+                            Row([txt_ddd, txt_telefone], spacing=10), 
+                            txt_email, txt_cidade, 
+                            txt_ie,dd_legenda_classificacao, 
+                            Row([btn_cadastrar, btn_limpar])
+                            ]), 
+                                Column([
+                                        lst_atividades
+                                        ])
+                    ], vertical_alignment='start')
+                    
             )
+            
 
     elementos = [txt_cnpj,txt_razao,txt_fantasia,txt_situacao,txt_cep,txt_endereco,
                 txt_numero,txt_complemento,txt_ddd,txt_telefone,txt_email,txt_cidade,
