@@ -2,7 +2,7 @@ import flet
 from flet import (  Page, ElevatedButton, Text, TextField, 
                     Row, Column ,Container, LinearGradient, Alignment, 
                     Dropdown, dropdown, ListView, alignment, colors,
-                    AlertDialog, TextButton)
+                    AlertDialog, TextButton, theme)
 from request_cnpj import consulta_cnpj
 from insert import insert_cliente
 
@@ -12,10 +12,12 @@ def main(page: Page):
     page.scroll = 'auto'
     page.window_maximized =  True
     #page.window_width = 700
+    #page.theme_mode = 'light'
+    page.update()
     width = 500
 
     def btn_pesquisar_click(e):
-        global cnpj, cd_cidade, cd_filial, ds_filial_entidade
+        global cnpj, cd_cidade, nr_numero, ds_letra, ds_bairro
         if not txt_cnpj.value:
             txt_cnpj.error_text = "Insira um CNPJ válido."
             page.update()
@@ -25,13 +27,13 @@ def main(page: Page):
         else:
             txt_cnpj.error_text = None
             cnpj = txt_cnpj.value
-            ds_entidade, ds_fantasia, situacao_cadastral, nr_cep, ds_endereco, nr_numero, ds_complemento,nr_ddd, nr_telefone, ds_email, ds_cidade, cd_cidade, nr_ie,cd_filial, ds_filial_entidade, ds_atividades = consulta_cnpj(cnpj)
+            ds_entidade, ds_fantasia, situacao_cadastral, nr_cep, ds_endereco, nr_numero, ds_letra, ds_complemento,ds_bairro, nr_ddd, nr_telefone, ds_email, cd_cidade, ds_cidade, nr_ie, ds_atividades = consulta_cnpj(cnpj)
             txt_razao.value = ds_entidade
             txt_fantasia.value = ds_fantasia
             txt_situacao.value = situacao_cadastral
             txt_cep.value = nr_cep
             txt_endereco.value = ds_endereco
-            txt_numero.value = nr_numero
+            txt_numero.value = f'{nr_numero} {ds_letra}'
             txt_complemento.value = ds_complemento
             txt_ddd.value = nr_ddd
             txt_telefone.value = nr_telefone
@@ -46,9 +48,16 @@ def main(page: Page):
             page.update()
 
     def btn_cadastrar_click(e):
-        cd_cliente = insert_cliente(cnpj, txt_razao.value, txt_fantasia.value, txt_cep.value, txt_endereco.value, txt_numero.value, txt_complemento.value, txt_ddd.value, txt_telefone.value, txt_email.value, cd_cidade, txt_ie.value, cd_filial, ds_filial_entidade,dd_legenda_classificacao.value )
-        dlg_modal.content = Text(f'Código do cliente: {cd_cliente}')
-        open_dlg_modal(e)
+        if not txt_cnpj.value:
+            txt_cnpj.error_text = "Insira um CNPJ válido."
+            page.update()
+        elif not dd_legenda_classificacao.value:
+            dd_legenda_classificacao.error_text = 'Por favor selecione uma classificação.'
+            page.update()
+        else:
+            cd_cliente = insert_cliente(cnpj, txt_razao.value, txt_fantasia.value, txt_cep.value, txt_endereco.value, ds_bairro,nr_numero, ds_letra, txt_complemento.value, txt_ddd.value, txt_telefone.value, txt_email.value, cd_cidade, txt_ie.value, dd_legenda_classificacao.value)
+            dlg_modal.content = Text(f'Código do cliente: {cd_cliente}')
+            open_dlg_modal(e)
 
     def btn_limpar_click(e):
         for elemento in elementos:
@@ -74,7 +83,7 @@ def main(page: Page):
     txt_situacao = TextField(label='Situação CNPJ', width=width, read_only=True)
     txt_cep = TextField(label='CEP', width=200)
     txt_endereco = TextField(label='Endereço', width=400)
-    txt_numero = TextField(label='Número', width=90)
+    txt_numero = TextField(label='Número', width=90, read_only=True)
     txt_complemento = TextField(label='Complemento', width=width)
     txt_ddd = TextField(label='DDD', width=90)
     txt_telefone = TextField(label='Telefone', width=400)
