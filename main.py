@@ -17,7 +17,7 @@ def main(page: Page):
     width = 500
 
     def btn_pesquisar_click(e):
-        global cnpj, cd_cidade, nr_numero, ds_letra, ds_bairro
+        global cnpj, cd_cidade, nr_numero, ds_letra, ds_bairro, ds_uf
         if not txt_cnpj.value:
             txt_cnpj.error_text = "Insira um CNPJ válido."
             page.update()
@@ -27,7 +27,7 @@ def main(page: Page):
         else:
             txt_cnpj.error_text = None
             cnpj = txt_cnpj.value
-            ds_entidade, ds_fantasia, situacao_cadastral, nr_cep, ds_endereco, nr_numero, ds_letra, ds_complemento,ds_bairro, nr_ddd, nr_telefone, ds_email, cd_cidade, ds_cidade, nr_ie, ds_atividades = consulta_cnpj(cnpj)
+            ds_entidade, ds_fantasia, situacao_cadastral, nr_cep, ds_endereco, nr_numero, ds_letra, ds_complemento,ds_bairro, nr_ddd, nr_telefone, ds_email, cd_cidade, ds_cidade,ds_uf, nr_ie, ds_atividades = consulta_cnpj(cnpj)
             txt_razao.value = ds_entidade
             txt_fantasia.value = ds_fantasia
             txt_situacao.value = situacao_cadastral
@@ -55,7 +55,11 @@ def main(page: Page):
             dd_legenda_classificacao.error_text = 'Por favor selecione uma classificação.'
             page.update()
         else:
-            cd_cliente = insert_cliente(cnpj, txt_razao.value, txt_fantasia.value, txt_cep.value, txt_endereco.value, ds_bairro,nr_numero, ds_letra, txt_complemento.value, txt_ddd.value, txt_telefone.value, txt_email.value, cd_cidade, txt_ie.value, dd_legenda_classificacao.value)
+            cd_cliente = insert_cliente(cnpj, txt_razao.value, txt_fantasia.value, 
+                                        txt_cep.value, txt_endereco.value, ds_bairro,
+                                        nr_numero, ds_letra, txt_complemento.value, 
+                                        txt_ddd.value, txt_telefone.value, txt_email.value, 
+                                        cd_cidade,ds_uf, txt_ie.value, dd_legenda_classificacao.value)
             dlg_modal.content = Text(f'Código do cliente: {cd_cliente}')
             open_dlg_modal(e)
 
@@ -75,7 +79,7 @@ def main(page: Page):
         page.update()
 
 
-    txt_cnpj = TextField(label="CNPJ", hint_text='Insira o CNPJ com 14 digitos.', width=390)
+    txt_cnpj = TextField(label="CNPJ", hint_text='Insira o CNPJ com 14 digitos.', width=390, max_length=14, helper_text='Digite o CNPJ sem caracteres especiais.')
     btn_pesquisar = ElevatedButton('Pesquisar', on_click=btn_pesquisar_click,width=100)
     txt_razao = TextField(label='Razao Social', width=width)
     lst_atividades = ListView(spacing=10, padding=70)
@@ -95,7 +99,7 @@ def main(page: Page):
                                                                                 dropdown.Option('PESSOA JURIDICA'),
                                                                                 dropdown.Option('CONSUMIDOR FINAL'),
                                                                                 dropdown.Option('PESSOA FISICA')
-                                                                                ], width=width
+                                                                                ], width=width, helper_text='Você deve obrigatoriamente escolher uma classificação.'
                                                                         )
     btn_cadastrar = ElevatedButton('Cadastrar', on_click=btn_cadastrar_click)
     btn_limpar = ElevatedButton('Limpar', on_click=btn_limpar_click)

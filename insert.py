@@ -23,8 +23,42 @@ cursor = cnxn.cursor()
 df = pd.DataFrame()
 df_sql = pd.DataFrame()
 
-def insert_cliente(cnpj, ds_entidade, ds_fantasia, nr_cep, ds_endereco, ds_bairro, nr_numero, ds_letra, ds_complemento, nr_ddd, nr_telefone, ds_email, cd_cidade, txt_ie, classificacao):
+mascara_ie = {
+    'AC': [r'(\d{2})(\d{3})(\d{3})(\d{3})(\d{2})', r'\1.\2.\3/\4-\5'],
+    'AL': [r'(\d{8})(\d{1})', r'\1-\2'],
+    'AM': [r'(\d{2})(\d{3})(\d{3})(\d{1})', r'\1.\2.\3-\4'],
+    'AP': [r'(\d{2})(\d{6})(\d{1})', r'\1.\2-\3'],
+    'BA': [r'(\d{3})(\d{3})(\d{3})', r'\1.\2.\3'],
+    'CE': [r'(\d{8})(\d{1})', r'\1-\2'],
+    'DF': [r'(\d{2})(\d{6})(\d{3})(\d{2})', r'\1.\2.\3-\4'],
+    'ES': [r'(\d{8})(\d{1})', r'\1-\2'],
+    'GO': [r'(\d{2})(\d{3})(\d{3})(\d{1})', r'\1.\2.\3-\4'],
+    'MA': [r'(\d{2})(\d{6})(\d{1})', r'\1.\2-\3'],
+    'MG': [r'(\d{3})(\d{6})(\d{2})(\d{2})', r'\1.\2.\3-\4'],
+    'MS': [r'(\d{2})(\d{6})(\d{1})', r'\1.\2-\3'],
+    'MT': [r'(\d{9})(\d{1})', r'\1-\2'],
+    'PA': [r'(\d{2})(\d{6})(\d{1})', r'\1.\2-\3'],
+    'PB': [r'(\d{8})(\d{1})', r'\1-\2'],
+    'PE': [r'(\d{7})(\d{2})', r'\1-\2'],
+    'PI': [r'(\d{8})(\d{1})', r'\1-\2'],
+    'PR': [r'(\d{8})(\d{2})', r'\1-\2'],
+    'RJ': [r'(\d{2})(\d{3})(\d{2})(\d{1})', r'\1.\2.\3-\4'],
+    'RN': [r'(\d{2})(\d{1})(\d{3})(\d{3})(\d{1})', r'\1.\2.\3.\4-\5'],
+    'RO': [r'(\d{13})(\d{1})', r'\1-\2'],
+    'RR': [r'(\d{8})(\d{1})', r'\1-\2'],
+    'RS': [r'(\d{3})(\d{6})(\d{1})', r'\1/\2-\3'],
+    'SC': [r'(\d{3})(\d{3})(\d{3})', r'\1.\2.\3'],
+    'SE': [r'(\d{8})(\d{1})', r'\1-\2'],
+    'SP': [r'(\d{3})(\d{3})(\d{3})(\d{3})', r'\1.\2.\3.\4'],
+    'TO': [r'(\d{2})(\d{2})(\d{6})(\d{1})', r'\1.\2.\3-\4'],
+    'ZF': [r'(\d{3})(\d{3})(\d{3})', r'\1.\2.\3'],
+    'EX': [r'(\d{3})(\d{3})(\d{3})', r'\1.\2.\3']
+
+}
+
+def insert_cliente(cnpj, ds_entidade, ds_fantasia, nr_cep, ds_endereco, ds_bairro, nr_numero, ds_letra, ds_complemento, nr_ddd, nr_telefone, ds_email, cd_cidade, ds_uf, txt_ie, classificacao):
     cnpj = re.sub(r'(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})', r'\1.\2.\3/\4-\5', str(cnpj))
+    nr_ie = re.sub(mascara_ie[ds_uf][0], mascara_ie[ds_uf][1], nr_ie)
     cd_filial = 3
     ds_filial_entidade = '1;3'
     cd_classificacao = 'NULL'
@@ -68,6 +102,9 @@ def insert_cliente(cnpj, ds_entidade, ds_fantasia, nr_cep, ds_endereco, ds_bairr
    
     #cursor.execute(insert)
     #cnxn.commit()
-    print(cnpj, ds_entidade, ds_fantasia, nr_cep, ds_endereco, ds_bairro, nr_numero, ds_letra, ds_complemento, nr_ddd, nr_telefone, ds_email, cd_cidade, txt_ie, cd_classificacao, cd_filial, ds_filial_entidade)
 
-    return 5434
+    consulta = f"""SELECT CD_ENTIDADE FROM ENTIDADES WHERE NR_CPFCNPJ = {cnpj};"""
+
+    #df_sql = pd.read_sql_query(consulta, cnxn)
+    #print(df_sql)
+    #return df_sql

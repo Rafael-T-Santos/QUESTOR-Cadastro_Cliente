@@ -25,7 +25,10 @@ def consulta_cnpj(cnpj):
             ds_letra += letra
         else:
             pass
-    nr_numero = int(nr_numero)
+    if nr_numero == '':
+        nr_numero = 0
+    else:
+        nr_numero = int(nr_numero)
 
     ds_complemento = data_dict['estabelecimento']['complemento']
     ds_bairro = data_dict['estabelecimento']['bairro']
@@ -34,6 +37,7 @@ def consulta_cnpj(cnpj):
     ds_email = data_dict['estabelecimento']['email']
     cd_cidade = data_dict['estabelecimento']['cidade']['ibge_id']
     ds_cidade = data_dict['estabelecimento']['cidade']['nome']
+    ds_uf = data_dict['estabelecimento']['estado']['sigla']
     nr_ie = 'ISENTO'
     for valor in data_dict['estabelecimento']['inscricoes_estaduais']:
         if valor['ativo']:
@@ -48,6 +52,6 @@ def consulta_cnpj(cnpj):
 
     return (ds_entidade, ds_fantasia, situacao_cadastral, 
             nr_cep, ds_endereco, nr_numero, ds_letra, ds_complemento, 
-            ds_bairro,nr_ddd, nr_telefone, ds_email, cd_cidade, ds_cidade, 
-            nr_ie, ds_atividades)
+            ds_bairro, nr_ddd, nr_telefone, ds_email, cd_cidade, ds_cidade,
+            ds_uf, nr_ie, ds_atividades)
 
