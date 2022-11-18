@@ -1,0 +1,2 @@
+server;database;username;password
+tcp:192.168.xxx.xxx,PORTA;NOMEDATABASE;USER;PASSWORD
