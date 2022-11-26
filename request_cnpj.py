@@ -1,6 +1,7 @@
 import requests
 import json
 from requests.structures import CaseInsensitiveDict
+from bs4 import BeautifulSoup
 
 def consulta_cnpj(cnpj):
 
@@ -38,12 +39,13 @@ def consulta_cnpj(cnpj):
     cd_cidade = data_dict['estabelecimento']['cidade']['ibge_id']
     ds_cidade = data_dict['estabelecimento']['cidade']['nome']
     ds_uf = data_dict['estabelecimento']['estado']['sigla']
-    nr_ie = 'ISENTO'
+    
+    nr_ie = []
     for valor in data_dict['estabelecimento']['inscricoes_estaduais']:
-        if valor['ativo']:
-            nr_ie = valor['inscricao_estadual']
-        else:
-            pass
+        nr_ie.append([valor['inscricao_estadual'],valor['estado']['sigla']])
+
+    situacoes_ie = consulta_situacao(nr_ie)
+
     ds_atividades = []
     ds_atividades.append(f"{data_dict['estabelecimento']['atividade_principal']['subclasse']} - {data_dict['estabelecimento']['atividade_principal']['descricao']}")
 
@@ -53,5 +55,23 @@ def consulta_cnpj(cnpj):
     return (ds_entidade, ds_fantasia, situacao_cadastral, 
             nr_cep, ds_endereco, nr_numero, ds_letra, ds_complemento, 
             ds_bairro, nr_ddd, nr_telefone, ds_email, cd_cidade, ds_cidade,
-            ds_uf, nr_ie, ds_atividades)
+            ds_uf, situacoes_ie, ds_atividades)
+
+
+def consulta_situacao(ie):
+    situacoes = []
+    for valor in ie:
+        if 'AL' in valor[1]:
+            page = requests.get(f'http://cadsinc.sefaz.al.gov.br/VisualizarDadosContribuinte.do?opcao=caceal&valor={valor[0][:-1]}')
+            soup = BeautifulSoup(page.text, 'html.parser')
+            dados = soup.find_all('b')
+            situacao = dados[6].get_text()
+            situacao = situacao.replace("\r", "").replace(" ", "").replace("\n", "").replace("\t", "")
+            status = [(valor[0]), valor[1] ,situacao]
+            situacao = ''
+            situacoes.append(status)
+        else:
+            pass
+    
+    return situacoes
 

@@ -25,9 +25,11 @@ def main(page: Page):
             txt_cnpj.error_text = "O CNPJ deve conter 14 digitos sem pontos ou traços."
             page.update()
         else:
+            dd_ie.options = []
+            lst_atividades.controls = [Text('')]
             txt_cnpj.error_text = None
             cnpj = txt_cnpj.value
-            ds_entidade, ds_fantasia, situacao_cadastral, nr_cep, ds_endereco, nr_numero, ds_letra, ds_complemento,ds_bairro, nr_ddd, nr_telefone, ds_email, cd_cidade, ds_cidade,ds_uf, nr_ie, ds_atividades = consulta_cnpj(cnpj)
+            ds_entidade, ds_fantasia, situacao_cadastral, nr_cep, ds_endereco, nr_numero, ds_letra, ds_complemento,ds_bairro, nr_ddd, nr_telefone, ds_email, cd_cidade, ds_cidade,ds_uf, situacoes_ie, ds_atividades = consulta_cnpj(cnpj)
             txt_razao.value = ds_entidade
             txt_fantasia.value = ds_fantasia
             txt_situacao.value = situacao_cadastral
@@ -39,7 +41,9 @@ def main(page: Page):
             txt_telefone.value = nr_telefone
             txt_email.value = ds_email
             txt_cidade.value = ds_cidade
-            txt_ie.value = nr_ie
+            dd_ie.options.append(dropdown.Option('ISENTO'))
+            for valor in situacoes_ie:
+                dd_ie.options.append(dropdown.Option(f'{valor[0]} - {valor[1]} - {valor[2]}'))
             for atividade in ds_atividades:
                 lst_atividades.controls.append(Text(atividade))  
 
@@ -48,6 +52,7 @@ def main(page: Page):
             page.update()
 
     def btn_cadastrar_click(e):
+        btn_limpar_click(e)
         if not txt_cnpj.value:
             txt_cnpj.error_text = "Insira um CNPJ válido."
             page.update()
@@ -66,6 +71,7 @@ def main(page: Page):
     def btn_limpar_click(e):
         for elemento in elementos:
             elemento.value = ''
+        dd_ie.options.append(dropdown.Option(''))
         lst_atividades.controls.clear()
         page.update()
 
@@ -94,7 +100,10 @@ def main(page: Page):
     txt_email = TextField(label='E-mail', width=width)
     txt_cidade = TextField(label='Cidade', width=width)
     txt_ie = TextField(label='Inscrição Estadual', width=width)
+    dd_ie = Dropdown(label='Inscrição Estadual', options=[], width=width, hint_text='Escolha a inscrição que deseja cadastrar.')
+    
     #txt_situacao_ie = TextField(label='Situação Inscrição Estadual', width=250, read_only=True)
+
     dd_legenda_classificacao = Dropdown(label='Classificação Entidade',options=[
                                                                                 dropdown.Option('PESSOA JURIDICA'),
                                                                                 dropdown.Option('CONSUMIDOR FINAL'),
@@ -113,7 +122,8 @@ def main(page: Page):
         on_dismiss=lambda e: print("Modal dialog dismissed!"),
     )
 
-    page.add(Row([
+    page.add(Row([], height=20),
+            Row([
                     Column([
                             Row([txt_cnpj, btn_pesquisar], spacing=10),
                             txt_razao,txt_fantasia, txt_situacao, txt_cep, 
@@ -121,7 +131,7 @@ def main(page: Page):
                             txt_complemento, 
                             Row([txt_ddd, txt_telefone], spacing=10), 
                             txt_email, txt_cidade, 
-                            txt_ie,dd_legenda_classificacao, 
+                            dd_ie,dd_legenda_classificacao, 
                             Row([btn_cadastrar, btn_limpar])
                             ]), 
                                 Column([
