@@ -17,5 +17,8 @@ Ao digitar o CNPJ e clicar em pesquisar é feito um request através de API grat
 ![Pesquisa Topo](https://github.com/Rafael-T-Santos/QUESTOR-Cadastro_Cliente/blob/main/imgs/prt3.png)
 ![Pesquisa scrooldown](https://github.com/Rafael-T-Santos/QUESTOR-Cadastro_Cliente/blob/main/imgs/prt4.png)
 
+### **Video:**
+[Demonstração](https://youtu.be/OQaKTePj8Ew)
+
 ### **Obs:**
 O sistema em si já funciona com a consulta de dados, apenas fazer o download ou clone do repositorio, instalar o requirements e executar o arquivo main, por questão de segurança os inserts estão comentados dentro do arquivo inserts.py, visto que funcionam apenas para o sistema Questor e modelo de negócio de nossa empresa, além do que o arquivo config.csv precisa ser configurado com os dados do servidor.
