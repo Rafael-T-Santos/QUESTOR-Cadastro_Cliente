@@ -12,7 +12,8 @@ def main(page: Page):
     page.scroll = 'auto'
     page.window_maximized =  True
     #page.window_width = 700
-    #page.theme_mode = 'light'
+    page.theme_mode = 'light'
+    page.theme = theme.Theme(color_scheme_seed="blue")
     page.update()
     width = 500
 
@@ -71,7 +72,7 @@ def main(page: Page):
     def btn_limpar_click(e):
         for elemento in elementos:
             elemento.value = ''
-        dd_ie.options.append(dropdown.Option(''))
+        dd_ie.options = []
         lst_atividades.controls.clear()
         page.update()
 
@@ -125,14 +126,15 @@ def main(page: Page):
     page.add(Row([], height=20),
             Row([
                     Column([
-                            Row([txt_cnpj, btn_pesquisar], spacing=10),
+                            Row([txt_cnpj, btn_pesquisar], spacing=10, vertical_alignment='start'),
                             txt_razao,txt_fantasia, txt_situacao, txt_cep, 
                             Row([txt_endereco,txt_numero]), 
                             txt_complemento, 
                             Row([txt_ddd, txt_telefone], spacing=10), 
                             txt_email, txt_cidade, 
                             dd_ie,dd_legenda_classificacao, 
-                            Row([btn_cadastrar, btn_limpar])
+                            Row([btn_cadastrar, btn_limpar]),
+                            Row([], height=20)
                             ]), 
                                 Column([
                                         lst_atividades
