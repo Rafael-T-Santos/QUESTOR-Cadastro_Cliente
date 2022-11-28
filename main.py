@@ -2,7 +2,7 @@ import flet
 from flet import (  Page, ElevatedButton, Text, TextField, 
                     Row, Column ,Container, LinearGradient, Alignment, 
                     Dropdown, dropdown, ListView, alignment, colors,
-                    AlertDialog, TextButton, theme)
+                    AlertDialog, TextButton, theme, WEB_BROWSER)
 from request_cnpj import consulta_cnpj
 from insert import insert_cliente
 
@@ -64,8 +64,8 @@ def main(page: Page):
             cd_cliente = insert_cliente(cnpj, txt_razao.value, txt_fantasia.value, 
                                         txt_cep.value, txt_endereco.value, ds_bairro,
                                         nr_numero, ds_letra, txt_complemento.value, 
-                                        txt_ddd.value, txt_telefone.value, txt_email.value, 
-                                        cd_cidade,ds_uf, txt_ie.value, dd_legenda_classificacao.value)
+                                        txt_ddd.value, txt_telefone.value, txt_ddd2.value, txt_telefone2.value, txt_contato.value,
+                                        txt_email.value, cd_cidade,ds_uf, txt_ie.value, dd_legenda_classificacao.value)
             dlg_modal.content = Text(f'Código do cliente: {cd_cliente}')
             open_dlg_modal(e)
 
@@ -98,6 +98,9 @@ def main(page: Page):
     txt_complemento = TextField(label='Complemento', width=width)
     txt_ddd = TextField(label='DDD', width=90)
     txt_telefone = TextField(label='Telefone', width=400)
+    txt_ddd2 = TextField(label='DDD', width=90)
+    txt_telefone2 = TextField(label='Telefone', width=400)
+    txt_contato = TextField(label='Contato', width=width)
     txt_email = TextField(label='E-mail', width=width)
     txt_cidade = TextField(label='Cidade', width=width)
     txt_ie = TextField(label='Inscrição Estadual', width=width)
@@ -130,8 +133,9 @@ def main(page: Page):
                             txt_razao,txt_fantasia, txt_situacao, txt_cep, 
                             Row([txt_endereco,txt_numero]), 
                             txt_complemento, 
-                            Row([txt_ddd, txt_telefone], spacing=10), 
-                            txt_email, txt_cidade, 
+                            Row([txt_ddd, txt_telefone], spacing=10),
+                            Row([txt_ddd2, txt_telefone2], spacing=10), 
+                            txt_contato, txt_email, txt_cidade, 
                             dd_ie,dd_legenda_classificacao, 
                             Row([btn_cadastrar, btn_limpar]),
                             Row([], height=20)
@@ -149,3 +153,4 @@ def main(page: Page):
                 txt_ie,dd_legenda_classificacao]
 
 flet.app(name='Cadastrar CNPJ', target=main)
+#flet.app(port=8088, target=main, view=WEB_BROWSER)

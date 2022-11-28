@@ -9,20 +9,6 @@ from datetime import datetime
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
-with open('_config\config.csv', 'r') as arquivo_csv:
-    leitor = csv.DictReader(arquivo_csv, delimiter=';')
-    for coluna in leitor:
-        server = coluna['server']
-        database = coluna['database']
-        username = coluna['username']
-        password = coluna['password']
-
-cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=' +
-                      server+';DATABASE='+database+';UID='+username+';PWD=' + password)
-cursor = cnxn.cursor()
-df = pd.DataFrame()
-df_sql = pd.DataFrame()
-
 mascara_ie = {
     'AC': [r'(\d{2})(\d{3})(\d{3})(\d{3})(\d{2})', r'\1.\2.\3/\4-\5'],
     'AL': [r'(\d{8})(\d{1})', r'\1-\2'],
@@ -57,6 +43,20 @@ mascara_ie = {
 }
 
 def insert_cliente(cnpj, ds_entidade, ds_fantasia, nr_cep, ds_endereco, ds_bairro, nr_numero, ds_letra, ds_complemento, nr_ddd, nr_telefone, ds_email, cd_cidade, ds_uf, txt_ie, classificacao):
+    #Conectar ao banco apenas quando clicar em Cadastrar
+    with open('_config\config.csv', 'r') as arquivo_csv:
+        leitor = csv.DictReader(arquivo_csv, delimiter=';')
+        for coluna in leitor:
+            server = coluna['server']
+            database = coluna['database']
+            username = coluna['username']
+            password = coluna['password']
+
+    cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=' +
+                        server+';DATABASE='+database+';UID='+username+';PWD=' + password)
+    cursor = cnxn.cursor()
+    
+    
     cnpj = re.sub(r'(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})', r'\1.\2.\3/\4-\5', str(cnpj))
     nr_ie = re.sub(mascara_ie[ds_uf][0], mascara_ie[ds_uf][1], nr_ie)
     cd_filial = 3
