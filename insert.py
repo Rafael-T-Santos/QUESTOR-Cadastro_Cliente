@@ -42,7 +42,7 @@ mascara_ie = {
 
 }
 
-def insert_cliente(cnpj, ds_entidade, ds_fantasia, nr_cep, ds_endereco, ds_bairro, nr_numero, ds_letra, ds_complemento, nr_ddd, nr_telefone, ds_email, cd_cidade, ds_uf, txt_ie, classificacao):
+def insert_cliente(cnpj, ds_entidade, ds_fantasia, nr_cep, ds_endereco, ds_bairro, nr_numero, ds_letra, ds_complemento, nr_ddd, nr_telefone, txt_ddd2, txt_telefone2, txt_contato, ds_email, cd_cidade, ds_uf, txt_ie, classificacao):
     #Conectar ao banco apenas quando clicar em Cadastrar
     with open('_config\config.csv', 'r') as arquivo_csv:
         leitor = csv.DictReader(arquivo_csv, delimiter=';')
